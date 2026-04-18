@@ -74,13 +74,22 @@ CpuStatus *Cpu65816::getCpuStatus() {
 void Cpu65816::reset() {
     setRESPin(true);
     mCpuStatus.setEmulationFlag();
+    mCpuStatus.clearCarryFlag();
+    mCpuStatus.clearZeroFlag();
+    mCpuStatus.clearSignFlag();
+    mCpuStatus.clearDecimalFlag();
+    mCpuStatus.clearOverflowFlag();
+    mCpuStatus.clearBreakFlag();
+    mCpuStatus.setInterruptDisableFlag();
     mCpuStatus.setAccumulatorWidthFlag();
     mCpuStatus.setIndexWidthFlag();
+    mA = 0x0000;
     mX &= 0xFF;
     mY &= 0xFF;
+    mDB = 0x00;
     mD = 0x0;
     mStack = Stack(&mSystemBus);
-    mProgramAddress = Address(0x00, mEmulationInterrupts->reset);
+    mProgramAddress = Address(0x00, mSystemBus.readTwoBytes(Address(0x00, mEmulationInterrupts->reset)));
 }
 
 void Cpu65816::setRESPin(bool value) {
